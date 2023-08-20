@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Proxy Checker</title>
+</head>
+
+<body>
+    <h1>Proxy List</h1>
+    <table id="proxy-table">
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>HOST</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data proxy akan dimasukkan di sini -->
+        </tbody>
+    </table>
+
+    <script>
+        const proxyTable = document.getElementById("proxy-table");
+
+        // Fungsi untuk menambahkan baris ke tabel
+        function addProxyRow(ip, host) {
+            const newRow = proxyTable.querySelector("tbody").insertRow();
+            const ipCell = newRow.insertCell(0);
+            const hostCell = newRow.insertCell(1);
+            const statusCell = newRow.insertCell(2);
+            const actionCell = newRow.insertCell(3);
+
+            ipCell.textContent = ip;
+            hostCell.textContent = host;
+            statusCell.textContent = "Not Checked";
+            actionCell.innerHTML = '<button onclick="checkProxy(this)">Check</button>';
+        }
+
+        // Fungsi untuk memeriksa proxy
+        function checkProxy(button) {
+            const row = button.parentElement.parentElement;
+            const ip = row.cells[0].textContent;
+            const host = row.cells[1].textContent;
+
+            // Di sini Anda dapat menambahkan logika untuk memeriksa proxy berdasarkan ip dan host
+            // Misalnya, mengirim permintaan HTTP melalui proxy dan memeriksa responsnya.
+            // Jika proxy berfungsi, Anda dapat mengubah statusCell.textContent menjadi "Working".
+
+            statusCell.textContent = "Checking..."; // Contoh status saat sedang memeriksa
+
+            // Setelah memeriksa, Anda dapat mengubah statusCell.textContent menjadi "Working" atau "Not Working" berdasarkan hasilnya.
+        }
+
+        // Memuat data proxy dari URL JSON eksternal saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("https://zhafrandev.github.io/ProxyChecker/dataproxy.json")
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(proxy => {
+                        addProxyRow(proxy.IP, proxy.HOST);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching JSON:", error);
+                });
+        });
+    </script>
+</body>
+
+</html>
