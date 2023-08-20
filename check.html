@@ -45,15 +45,36 @@
             const row = button.parentElement.parentElement;
             const ip = row.cells[0].textContent;
             const host = row.cells[1].textContent;
+            const statusCell = row.cells[2];
 
-            // Di sini Anda dapat menambahkan logika untuk memeriksa proxy berdasarkan ip dan host
-            // Misalnya, mengirim permintaan HTTP melalui proxy dan memeriksa responsnya.
-            // Jika proxy berfungsi, Anda dapat mengubah statusCell.textContent menjadi "Working".
+            
+            statusCell.textContent = "Checking..."; 
+            const testUrl = "https://www.google.com";
 
-            statusCell.textContent = "Checking..."; // Contoh status saat sedang memeriksa
+    // URL proxy yang akan digunakan (contoh: proxy IP dan port)
+    const proxyUrl = `http://${ip}`;
 
-            // Setelah memeriksa, Anda dapat mengubah statusCell.textContent menjadi "Working" atau "Not Working" berdasarkan hasilnya.
+    // Buat objek XMLHttpRequest
+    const xhr = new XMLHttpRequest();
+
+    // Atur konfigurasi untuk menggunakan proxy
+    xhr.open("GET", testUrl, true);
+    xhr.timeout = 5000; // Waktu maksimal tunggu respons dari proxy (dalam milidetik)
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                // Respon sukses dari proxy, proxy berfungsi
+                statusCell.textContent = "Working";
+            } else {
+                // Tidak ada respons dari proxy atau ada masalah lain
+                statusCell.textContent = "Not Working";
+            }
         }
+    };
+
+    // Mulai permintaan ke proxy
+    xhr.send(null);
+}
 
         // Memuat data proxy dari URL JSON eksternal saat halaman dimuat
         document.addEventListener("DOMContentLoaded", function () {
