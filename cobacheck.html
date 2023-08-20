@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Checker</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Proxy</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>51.254.167.45:58016</td>
+                <td id="status">Checking...</td>
+                <td><button onclick="checkProxy()">Check</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        function checkProxy() {
+            const proxy = "51.254.167.45:58016";
+            const statusCell = document.getElementById("status");
+
+            // Tentukan URL target untuk diakses melalui proxy (ganti dengan URL yang sesuai)
+            const targetUrl = "https://www.google.com"; // Ganti dengan URL yang ingin Anda periksa
+
+            // Buat objek XMLHttpRequest untuk mengirim permintaan melalui proxy
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", targetUrl);
+            xhr.proxy = `http://${proxy}`;
+            xhr.timeout = 5000; // Waktu maksimum untuk menunggu respons dalam milidetik (misalnya, 5 detik)
+
+            // Atur event listener untuk menangani respons
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        statusCell.textContent = "Working";
+                    } else {
+                        statusCell.textContent = "Not Working";
+                    }
+                }
+            };
+
+            // Tangani kesalahan saat mengirim permintaan
+            xhr.onerror = function () {
+                statusCell.textContent = "Not Working";
+            };
+
+            // Mulai mengirim permintaan
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
