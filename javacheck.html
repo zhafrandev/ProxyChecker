@@ -25,9 +25,9 @@ function cekProxy() {
     const hasil = document.getElementById('hasil');
 
     const [proxyAddress, proxyPort] = proxyInput.split(':');
-    const url = 'http://www.google.com'; // URL yang akan diakses
+    const url = 'https://www.google.com'; // URL yang akan diakses
 
-    const proxyUrl = `http://${proxyAddress}:${proxyPort}`;
+    const proxyUrl = `https://${proxyAddress}:${proxyPort}`;
 
     // Membuat objek Request untuk proxy
     const proxyRequest = new Request(proxyUrl, {
