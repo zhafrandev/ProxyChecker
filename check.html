@@ -1,25 +1,54 @@
-const http = require('http');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cek Proxy</h1>
+    <p>Masukkan alamat IP proxy dan port:</p>
+    <input type="text" id="proxyInput" placeholder="Contoh: 212.83.143.60:58239">
+    <button onclick="cekProxy()">Cek</button>
+    <p id="hasil"></p>
 
-const proxyAddress = '212.83.143.60';
-const proxyPort = 58239;
+    <script>
+        function cekProxy() {
+            const proxyInput = document.getElementById('proxyInput').value;
+            const hasil = document.getElementById('hasil');
 
-const options = {
-  host: proxyAddress,
-  port: proxyPort,
-  path: 'http://www.google.com', // Coba mengakses Google sebagai tes
-  timeout: 5000 // Batas waktu dalam milidetik
-};
+            const [proxyAddress, proxyPort] = proxyInput.split(':');
+            const options = {
+                method: 'GET',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0'
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                timeout: 5000 // Batas waktu dalam milidetik
+            };
 
-const req = http.request(options, (res) => {
-  if (res.statusCode === 200) {
-    console.log('Proxy masih hidup.');
-  } else {
-    console.log('Proxy mati atau tidak merespons dengan benar.');
-  }
-});
-
-req.on('error', (err) => {
-  console.error('Terjadi kesalahan saat mencoba terhubung ke proxy:', err.message);
-});
-
-req.end();
+            fetch('http://www.google.com', { ...options, agent: new (require('http').Agent)({ keepAlive: true }) })
+                .then((response) => {
+                    if (response.ok) {
+                        hasil.textContent = 'Proxy masih hidup.';
+                    } else {
+                        hasil.textContent = 'Proxy mati atau tidak merespons dengan benar.';
+                    }
+                })
+                .catch((error) => {
+                    hasil.textContent = 'Terjadi kesalahan saat mencoba terhubung ke proxy: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html>
