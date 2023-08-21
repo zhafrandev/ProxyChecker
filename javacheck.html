@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cek Proxy</h1>
+    <p>Masukkan alamat IP proxy dan port:</p>
+    <input type="text" id="proxyInput" placeholder="Contoh: 212.83.143.60:58239">
+    <button onclick="cekProxy()">Cek</button>
+    <p id="hasil"></p>
+
+    <!-- Kode JavaScript disimpan di dalam tag <script> -->
+    <script>
 function cekProxy() {
     const proxyInput = document.getElementById('proxyInput').value;
     const hasil = document.getElementById('hasil');
@@ -33,3 +55,6 @@ function cekProxy() {
             hasil.textContent = 'Terjadi kesalahan saat mencoba terhubung ke proxy: ' + error.message;
         });
 }
+        </script>
+</body>
+</html>
