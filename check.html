@@ -1,95 +1,25 @@
-<!DOCTYPE html>
-<html>
+const http = require('http');
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Proxy Checker</title>
-</head>
+const proxyAddress = '212.83.143.60';
+const proxyPort = 58239;
 
-<body>
-    <h1>Proxy List</h1>
-    <table id="proxy-table">
-        <thead>
-            <tr>
-                <th>IP</th>
-                <th>HOST</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data proxy akan dimasukkan di sini -->
-        </tbody>
-    </table>
+const options = {
+  host: proxyAddress,
+  port: proxyPort,
+  path: 'http://www.google.com', // Coba mengakses Google sebagai tes
+  timeout: 5000 // Batas waktu dalam milidetik
+};
 
-    <script>
-        const proxyTable = document.getElementById("proxy-table");
+const req = http.request(options, (res) => {
+  if (res.statusCode === 200) {
+    console.log('Proxy masih hidup.');
+  } else {
+    console.log('Proxy mati atau tidak merespons dengan benar.');
+  }
+});
 
-        // Fungsi untuk menambahkan baris ke tabel
-        function addProxyRow(ip, host) {
-            const newRow = proxyTable.querySelector("tbody").insertRow();
-            const ipCell = newRow.insertCell(0);
-            const hostCell = newRow.insertCell(1);
-            const statusCell = newRow.insertCell(2);
-            const actionCell = newRow.insertCell(3);
+req.on('error', (err) => {
+  console.error('Terjadi kesalahan saat mencoba terhubung ke proxy:', err.message);
+});
 
-            ipCell.textContent = ip;
-            hostCell.textContent = host;
-            statusCell.textContent = "Not Checked";
-            actionCell.innerHTML = '<button onclick="checkProxy(this)">Check</button>';
-        }
-
-        // Fungsi untuk memeriksa proxy
-        function checkProxy(button) {
-            const row = button.parentElement.parentElement;
-            const ip = row.cells[0].textContent;
-            const host = row.cells[1].textContent;
-            const statusCell = row.cells[2];
-
-            
-            statusCell.textContent = "Checking..."; 
-            const testUrl = "https://www.google.com";
-
-    // URL proxy yang akan digunakan (contoh: proxy IP dan port)
-    const proxyUrl = `http://${ip}`;
-
-    // Buat objek XMLHttpRequest
-    const xhr = new XMLHttpRequest();
-
-    // Atur konfigurasi untuk menggunakan proxy
-    xhr.open("GET", testUrl, true);
-    xhr.timeout = 5000; // Waktu maksimal tunggu respons dari proxy (dalam milidetik)
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                // Respon sukses dari proxy, proxy berfungsi
-                statusCell.textContent = "Working";
-            } else {
-                // Tidak ada respons dari proxy atau ada masalah lain
-                statusCell.textContent = "Not Working";
-            }
-        }
-    };
-
-    // Mulai permintaan ke proxy
-    xhr.send(null);
-}
-
-        // Memuat data proxy dari URL JSON eksternal saat halaman dimuat
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch("https://zhafrandev.github.io/ProxyChecker/dataproxy.json")
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(proxy => {
-                        addProxyRow(proxy.IP, proxy.HOST);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching JSON:", error);
-                });
-        });
-    </script>
-</body>
-
-</html>
+req.end();
